@@ -1,0 +1,148 @@
+from news.models import*
+
+u1 = User.objects.create_user(username='Danil')
+
+u2 = User.objects.create_user(username='Ivan')
+
+Author.objects.create(authorUser=u1)
+
+Author.objects.create(authorUser=u2)
+
+Category.objects.create(name='IT')
+
+Category.objects.create(name='Music')
+
+Category.objects.create(name='Books')
+
+Category.objects.create(name='Realty')
+
+author = Author.objects.get(id=1)
+
+Post.objects.create(author=author, categoryType='NW', title='project', text='test')
+
+Post.objects.get(id=1).postCategory.add(Category.objects.get(id=1))
+
+Post.objects.get(id=1).postCategory.add(Category.objects.get(id=2))
+
+Comment.objects.create(commentPost=Post.objects.get(id=1), commentUser=Author.objects.get(id=1).authorUser, text='Классный пост!')
+
+Comment.objects.create(commentPost=Post.objects.get(id=1), commentUser=Author.objects.get(id=2).authorUser, text='Жиза')
+
+Comment.objects.create(commentPost=Post.objects.get(id=1), commentUser=Author.objects.get(id=1).authorUser, text='Очень интересно')
+
+Comment.objects.get(id=1).like()
+
+Comment.objects.get(id=1).rating
+
+Comment.objects.get(id=2).like()
+
+Comment.objects.get(id=2).rating
+
+Comment.objects.get(id=1).dislike()
+
+Comment.objects.get(id=1).rating
+
+Comment.objects.get(id=1).like()
+
+Comment.objects.get(id=1).rating
+
+Author.objects.get(id=1)
+
+a = Author.objects.get(id=1)
+
+a.update_rating()
+
+a.ratingAuthor
+
+author2 = Author.objects.get(id=2)
+
+Post.objects.create(author=author2, categoryType='NW', title='SkillFactory', text='Python')
+
+Post.objects.get(id=2).postCategory.add(Category.objects.get(id=1))
+
+Post.objects.get(id=2).postCategory.add(Category.objects.get(id=2))
+
+Comment.objects.create(commentPost=Post.objects.get(id=2), commentUser=Author.objects.get(id=1).authorUser, text='Вау!')
+
+Comment.objects.create(commentPost=Post.objects.get(id=2), commentUser=Author.objects.get(id=2).authorUser, text='Прикольно!')
+
+Comment.objects.get(id=4).like()
+
+Comment.objects.get(id=4).like()
+
+Comment.objects.get(id=4).rating
+
+Comment.objects.get(id=5).like()
+
+Comment.objects.get(id=5).like()
+
+Comment.objects.get(id=5).dislike()
+
+Comment.objects.get(id=5).rating
+
+author2.update_rating()
+
+author2.ratingAuthor
+
+a.ratingAuthor
+
+a = Author.objects.order_by('-ratingAuthor')[:1]
+
+a
+
+a = Author.objects.order_by('-ratingAuthor')
+
+a
+
+Post.objects.create(author=author, categoryType='AR', title='Новости в мире', text='Сегодня...')
+
+Post.objects.create(author=author2, categoryType='AR', title='Музыка', text='Артист выпустил новый трек')
+
+Post.objects.get(id=3).postCategory.add(Category.objects.get(id=3))
+
+Post.objects.get(id=3).postCategory.add(Category.objects.get(id=4))
+
+Post.objects.get(id=4).postCategory.add(Category.objects.get(id=3))
+
+Post.objects.get(id=4).postCategory.add(Category.objects.get(id=2))
+
+Comment.objects.create(commentPost=Post.objects.get(id=3), commentUser=Author.objects.get(id=1).authorUser, text='Это шедевр')
+
+Comment.objects.create(commentPost=Post.objects.get(id=4), commentUser=Author.objects.get(id=2).authorUser, text='Пушка,бомба,петарда')
+
+Comment.objects.get(id=6).like()
+
+Comment.objects.get(id=6).like()
+
+Comment.objects.get(id=6).like()
+
+Comment.objects.get(id=7).like()
+
+Comment.objects.get(id=7).dislike()
+
+a.update_rating()
+
+a.ratingAuthor
+
+author2.update_rating()
+
+author2.ratingAuthor
+
+a = Author.objects.order_by('-ratingAuthor')[:1]
+
+a
+
+Post.objects.order_by('-rating').values('dateCreation', 'author__authorUser__username', 'rating', 'title','comment','text')[:1]
+
+Post.objects.order_by('-rating')[0].preview()
+
+Post.objects.get(id=1).rating
+
+p = Post.objects.get(id=1)
+
+p
+
+p.comment_set.all().values('dateCreation', 'commentUser','rating', 'text')
+
+
+
