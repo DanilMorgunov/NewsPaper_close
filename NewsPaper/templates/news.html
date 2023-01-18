@@ -13,8 +13,14 @@ News
 
     <form action="" method="get">
        {{ filterset.form.as_p }}
-    <input type="submit" value="Search">
+    <input type="submit" value="Поиск">
    </form>
+
+    <hr>
+
+    {% if perms.newspaper.add_post %}
+    <a href="{% url 'post_create' %}">Создать пост</a>
+    {% endif %}
 
 {% if news %} <!--Проверка на наличие новостей-->
 
@@ -25,12 +31,26 @@ News
             <td>Заголовок </td>
             <td> Дата публикации</td>
             <td> Содержание</td>
+
+            {% if perms.newspaper.change_post or perms.newspaper.delete_post %}
+            <td>Действия</td>
+            {% endif %}
+
         </tr>
         {% for n in news %}
         <tr>
             <td>{{ n.title|truncatechars:40|censor }}</td>
             <td>{{ n.dateCreation }}</td>
             <td>{{ n.text|truncatechars:20|censor }}</td>
+
+            <td>
+                {% if perms.newspaper.change_post %}
+                <a href="{% url 'post_edit' n.id %}">Изменить</a>
+                {% endif %}
+                {% if perms.newspaper.delete_post %}
+                <a href="{% url 'post_delete' n.id %}">Удалить</a>
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </table>
