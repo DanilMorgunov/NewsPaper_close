@@ -1,0 +1,89 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+News
+{% endblock title %}
+
+{% block content %}
+    {% if is_not_subscriber %}
+        <p class="text-center"><a href="{% url 'subscribe' category.id %}" class="btn-secondary btn-sm">Подписаться</a></p>
+    {% endif %}
+    {% if is_not_author%}
+        <button><a href="{% url 'edit' %}">Стать автором</a></button>
+    {% endif %}
+    <h1>Все новости</h1>
+    <hr>
+    {% if category_news_list %}
+        <form action="" method="get">
+           {{ filterset.form.as_p }}
+            <input type="submit" value="Поиск">
+        </form>
+    {% endif %}
+    {% if perms.newspaper.add_post %}
+        <a href="{% url 'post_create' %}">Создать пост</a>
+    {% endif %}
+
+{% if news %} <!--Проверка на наличие новостей-->
+
+    <h5>Количество новостей: {{ news|length }}</h5>
+
+    <table>
+        <tr>
+            <td>Заголовок </td>
+            <td>Категории  </td>
+            <td> Дата публикации</td>
+            <td> Содержание</td>
+
+            {% if perms.newspaper.change_post or perms.newspaper.delete_post %}
+            <td>Действия</td>
+            {% endif %}
+
+        </tr>
+        {% for n in category_news_list %}
+        <tr>
+            <td>{{ n.title|truncatechars:40|censor }}</td>
+            <td>{{ n.dateCreation }}</td>
+            <td>{{ n.text|truncatechars:20|censor }}</td>
+
+            <td>
+                {% if perms.newspaper.change_post %}
+                <a href="{% url 'post_edit' n.id %}">Изменить</a>
+                {% endif %}
+                {% if perms.newspaper.delete_post %}
+                <a href="{% url 'post_delete' n.id %}">Удалить</a>
+                {% endif %}
+            </td>
+            <td>
+                {% for category in post.category.all %}
+                    <a href="{% url 'category_list' category.id %}">{{ category }}</a>
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+<!--    {{ news }} -->
+{% else %}
+    <h2>Новостей нет...</h2>
+{% endif %}
+
+{% if page_obj.has_previous %}
+       <a href="?page=1">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+    {% endif %}
+{% endif %}
+
+
+{{ page_obj.number }}
+
+   {% if page_obj.has_next %}
+       <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+    {% endif %}
+{% endblock content %}

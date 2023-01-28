@@ -29,6 +29,7 @@ News
     <table>
         <tr>
             <td>Заголовок </td>
+            <td>Категории </td>
             <td> Дата публикации</td>
             <td> Содержание</td>
 
@@ -51,6 +52,10 @@ News
                 <a href="{% url 'post_delete' n.id %}">Удалить</a>
                 {% endif %}
             </td>
+            <td>
+                {% for category in post.category.all %}
+                    <a href="{% url 'category_list' category.id %}">{{ category }}</a>
+                {% endfor %}
         </tr>
         {% endfor %}
     </table>

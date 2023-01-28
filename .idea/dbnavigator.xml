@@ -48,6 +48,9 @@
     <last-used-operator value="EQUAL" />
     <filters />
   </component>
+  <component name="DBNavigator.Project.ParserDiagnosticsManager">
+    <diagnostics-history />
+  </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
       <connection id="b2a73b97-6cc9-48eb-9b5b-7ee1e7d19091" active="true" signed="true">
