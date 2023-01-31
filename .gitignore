@@ -1,2 +1,3 @@
-/venv/
-/NewsPaper/.env/
+/venv
+/.idea
+/NewsPaper/.env
