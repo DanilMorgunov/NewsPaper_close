@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.yandex',
     'django_apscheduler',
-    'django_celery_beat',
 ]
 
 SITE_ID = 1
@@ -59,11 +58,16 @@ SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'basic.middlewares.TimezoneMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'NewsPaper.urls'
@@ -175,3 +179,120 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache_files'), # Указываем, куда будем сохранять кэшируемые файлы! Не забываем создать папку cache_files внутри папки с manage.py!
+    }
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'style': '{',
+    'formatters': {
+        'debug': {
+            'format': '%(asctime)s %(levelname)-8s %(message)s'
+        },
+        'warning': {
+            'format': '%(asctime)s %(levelname)-8s %(message)s %(pathname)s'
+        },
+        'others': {
+            'format': '%(asctime)s %(levelname)-8s %(message)s %(pathname)s %(exc_info)s'
+        },
+        'file_general': {
+            'format': '%(asctime)s %(levelname)-8s %(module)s %(message)s'
+        },
+        'file_errors': {
+            'format': '%(asctime)s %(levelname)-8s %(message)s %(pathname)s %(exc_info)s'
+        },
+        'file_secur': {
+            'format': '%(asctime)s %(levelname)-8s %(module)s %(message)s'
+        },
+        'mail_errors': {
+            'format': '%(asctime)s %(levelname)-8s %(message)s %(pathname)s'
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
+    'handlers': {
+        'console_1': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'debug',
+            'filename': os.path.join(BASE_DIR, 'debug.log')
+        },
+        'console_2': {
+            'level': 'WARNING',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'warning'
+        },
+        'console_3': {
+            'level': 'ERROR',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'others'
+        },
+        'file_general': {
+            'level': 'INFO',
+            'filters': ['require_debug_false'],
+            'class': 'logging.FileHandler',
+            'formatter': 'file_general',
+            'filename': os.path.join(BASE_DIR, 'logs/general.log')
+        },
+        'file_errors': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'formatter': 'file_errors',
+            'filename': os.path.join(BASE_DIR, 'logs/errors.log')
+        },
+        'file_secur': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'file_secur',
+            'filename': os.path.join(BASE_DIR, 'logs/security.log')
+        },
+        'mail_errors': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'mail_errors'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console_1', 'console_2', 'console_3', 'file_general', 'file_errors'],
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': [ 'file_errors', 'mail_errors'],
+            'propagate': False,
+        },
+        'django.server': {
+            'handlers': [ 'file_errors', 'mail_errors'],
+            'propagate': False,
+        },
+        'django.template': {
+            'handlers': [ 'file_errors'],
+            'propagate': False,
+        },
+        'django.db_backends': {
+            'handlers': [ 'file_errors'],
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['file_secur'],
+            'propagate': False,
+        },
+    },
+}
+
