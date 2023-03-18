@@ -124,7 +124,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
+
+LANGUAGES = [
+    ('en-us', 'English'),
+    ('ru', 'Русский')
+]
 
 TIME_ZONE = 'UTC'
 
@@ -145,6 +150,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static"
+]
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale')
 ]
 
 LOGIN_REDIRECT_URL = "/news"
@@ -228,7 +237,6 @@ LOGGING = {
             'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
             'formatter': 'debug',
-            'filename': os.path.join(BASE_DIR, 'debug.log')
         },
         'console_2': {
             'level': 'WARNING',
@@ -295,4 +303,3 @@ LOGGING = {
         },
     },
 }
-

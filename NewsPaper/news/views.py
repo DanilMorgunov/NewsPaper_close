@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.cache import cache
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView
 )
@@ -11,6 +13,23 @@ from .filters import PostFilter
 from .forms import PostForm
 from .models import Post, Category
 import logging
+
+
+
+from django.utils.translation import gettext, activate, get_supported_language_variant
+
+class Index(View):
+    def get(self, request):
+        string = _('Hello world')
+
+        #return HttpResponse(string)
+
+        context = {
+            'string': string
+        }
+
+        return HttpResponse(render(request, 'index.html', context))
+
 
 logger = logging.getLogger(__name__)
 
